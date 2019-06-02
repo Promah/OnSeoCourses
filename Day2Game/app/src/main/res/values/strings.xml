@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ApplicationGameDay2</string>
+    <string name="value_of_num_rows">Rows:</string>
+    <string name="value_of_num_cols">Cols:</string>
+    <string name="empty_str"/>
+    <string name="build_game_field">New Game</string>
+    <string name="welcome_text">Chose field size and start new game!</string>
+</resources>
