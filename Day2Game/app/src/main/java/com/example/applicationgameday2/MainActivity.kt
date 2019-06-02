@@ -1,10 +1,8 @@
 package com.example.applicationgameday2
 
 
-import android.graphics.drawable.ScaleDrawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
@@ -15,7 +13,9 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
-    val ID_TMP_CHECKBOXES_OFFSET = 12421412
+    val ID_TMP_CHECKBOXES_OFFSET = 300
+
+    //try to set separate scaled drawables, but have problem with appeared random padding
 //    var scaledCheckBoxDrawable = ScaleDrawable(resources.getDrawable(R.drawable.game_checkbox), Gravity.CENTER, 0.5F, 0.5F)
 //    scaledCheckBoxDrawable.level = 1000
 
@@ -46,8 +46,8 @@ class MainActivity : AppCompatActivity() {
             inputNumRows?.also {
                 if(inputNumCols < 2 || inputNumRows < 2)
                     Toast.makeText(this,"Minimum field is 2x2",Toast.LENGTH_LONG).show()
-                else if (inputNumCols > 10 || inputNumRows > 10)
-                    Toast.makeText(this,"Maximum field is 10x10",Toast.LENGTH_LONG).show()
+                else if (inputNumCols > 15 || inputNumRows > 15)
+                    Toast.makeText(this,"Maximum field is 15x15",Toast.LENGTH_LONG).show()
                 else
                     buildGameField(inputNumRows, inputNumCols )
             }
@@ -58,8 +58,8 @@ class MainActivity : AppCompatActivity() {
     private fun buildGameField(numRows : Int, numCols : Int){
 
         //calculating scales variables
-        val gameFieldWith = wrapperGameFild.width
-        val gameFieldHeight = wrapperGameFild.height
+        val gameFieldWith = wrapperGameField.width
+        val gameFieldHeight = wrapperGameField.height
 
         val checkBoxIco = resources.getDrawable(R.drawable.game_checkbox)
         val checkBoxIcoWidth = checkBoxIco.intrinsicWidth.toFloat()
@@ -75,12 +75,13 @@ class MainActivity : AppCompatActivity() {
         }
         val checkBoxIcoScale :Float = min(checkBoxIcoScaleW,checkBoxIcoScaleH)
 
+        //try to set separate scaled drawables, but have problem with appeared random padding
 //        val checkBoxIcoScaledWidth = (checkBoxIcoWidth*checkBoxIcoScale).roundToInt()
 //        val checkBoxIcoScaledHeight = (checkBoxIcoHeight*checkBoxIcoScale).roundToInt()
 
 
         changeGameFieldSize(numRows,numCols)
-        wrapperGameFild.removeAllViews()
+        wrapperGameField.removeAllViews()
 
         val tmpLayoutParamsLinearLayout = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT)
         val tmpLayoutParamsCheckBox = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -94,8 +95,6 @@ class MainActivity : AppCompatActivity() {
                 val tmpCheckBox = CheckBox(this)
                 tmpCheckBox.layoutParams = tmpLayoutParamsCheckBox
                 tmpCheckBox.id = ID_TMP_CHECKBOXES_OFFSET + (curRow * numCols + curCol)
-                tmpCheckBox.isChecked = false
-
 
                 //CheckBox styles, but cant scale Drawables with propriety covering places
                 // variant 1 (cant "center-crop"):
@@ -116,17 +115,21 @@ class MainActivity : AppCompatActivity() {
 
 
                 tmpCheckBox.setOnClickListener {
-                    gameOnCheckBoxClick(curRow * numCols + curCol)
-                    updateGameField()
-                    if(haveWon()) Toast.makeText(this,"Have won!",Toast.LENGTH_SHORT).show()
+                    onClickListenerGameFieldCheckbox(curRow * numCols + curCol)
                 }
                 tmpLinearLayout.addView(tmpCheckBox)
             }
 
-            wrapperGameFild.addView(tmpLinearLayout)
+            wrapperGameField.addView(tmpLinearLayout)
         }
         shuffle()
         updateGameField()
+    }
+
+    private fun onClickListenerGameFieldCheckbox( numOfElement : Int){
+        gameOnCheckBoxClick(numOfElement)
+        updateGameField()
+        if(haveWon()) Toast.makeText(this,"Have won!",Toast.LENGTH_SHORT).show()
     }
 
     private fun updateGameField() {
