@@ -26,12 +26,6 @@ class MainActivity : AppCompatActivity() {
         val connectivityManager= this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connectivityManager.activeNetworkInfo
 
-        //internet check
-        isInternetAvalible = networkInfo!=null && networkInfo.isConnected
-
-        if (!isInternetAvalible)
-            textViewJokeText.text = "Error: no internet connection available!"
-
         mainViewModel = ViewModelProviders.of(this, ModelFactory()).get(MainViewModel::class.java)
 
         mainViewModel.getLiveJokeText().observe(this, Observer {
@@ -60,7 +54,12 @@ class MainActivity : AppCompatActivity() {
         })
 
         buttonNewJoke.setOnClickListener {
-            mainViewModel.setNewJoke()
+            isInternetAvalible = networkInfo!=null && networkInfo.isConnected
+
+            if (!isInternetAvalible)
+                textViewJokeText.text = "Error: no internet connection available!"
+            else 
+                mainViewModel.setNewJoke()
         }
 
     }
