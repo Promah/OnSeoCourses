@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Day5RecyclerNorrisJokes</string>
+    <string name="new_joke">get new joke</string>
+
+</resources>
