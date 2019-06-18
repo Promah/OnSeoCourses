@@ -1,0 +1,80 @@
+package com.example.day4norrisjokes
+
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import okhttp3.*
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.IOException
+import kotlin.random.Random
+import android.text.Html
+
+
+class MainData {
+    //di4
+    var isLoadingState = MutableLiveData<Boolean>()
+    fun getLoadingState(): LiveData<Boolean> =
+        isLoadingState
+
+    var liveJokeText = MutableLiveData<String>()
+    fun getLiveJokeText(): LiveData<String> =
+        liveJokeText
+
+    var liveJokeImgUrl = MutableLiveData<String>()
+    fun getLiveJokeImgUrl(): LiveData<String> =
+        liveJokeImgUrl
+    fun getNewLiveJokeImgUrl(){
+        this.liveJokeImgUrl.postValue(img_urls[Random.nextInt(img_urls.count())])
+    }
+
+    //ned di4
+//    private var isLoading = false
+
+
+    companion object {
+        val img_urls = listOf<String>(
+            "http://img2.rnkr-static.com/user_node_img/50016/1000312512/870/chuck-norris-chose-scissors-photo-u2.jpg",
+            "https://goo.gl/32YN2B"
+        )
+        val urlOfJsonJokes = "https://api.icndb.com/jokes/random"
+        val client = OkHttpClient()
+    }
+
+//    private var jokeImgUrl : String = ""
+//    fun setNewJokeImgUrl(){
+//        this.jokeImgUrl = img_urls[Random.nextInt(img_urls.count())]
+//    }
+//    fun getJokeImgUrl(): String =
+//        this.jokeImgUrl
+
+//    fun getIsLoading(): Boolean {
+//        println("in getIsLoading = $isLoading")
+//        return this.isLoading
+//    }
+
+//    fun getRandomJokeText(): String {
+    fun getRandomJokeText(){
+        println("in getRandomJokeText")
+//        isLoading = true
+        this.isLoadingState.postValue(true)
+//        println("1sendResultText = ${getJokeText()}")// executes order 1
+
+        val request = Request.Builder()
+            .url(urlOfJsonJokes)
+            .build()
+
+        //val response = client.newCall(request).execute() // FATAL EXCEPTION: android.os.StrictMode$AndroidBlockGuardPolicy.onNetwork, wtf
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onResponse(call: Call, response: Response) {
+                println("in onResponse")// executes order 3, why not in order 2 ???????????!!!!!
+                try {
+                    val json = JSONObject(response.body()?.string())
+                    val jokeText = JSONObject(json["value"].toString())["joke"] as String
+//                    println("jokeText=$jokeText") // Successful!!// executes order 4
+
+//                    this@MainData.setJokeText(jokeText)//
+
+//                    println("2sendResultText = ${getJokeText()}")// executes order 5
+//                    isLoading = false
+           
